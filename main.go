@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/mskydream/youtube/app/handler"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	app := fiber.New()
+
+	err := handler.Run(app)
+	if err != nil {
+		panic(err)
+	}
 }
