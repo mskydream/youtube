@@ -16,12 +16,20 @@ func NewHandler(usecase *usecase.UseCase) *Handler {
 }
 
 func (h *Handler) InitRouterV1(app *fiber.App) {
-	api := app.Group("/api/v1")
+	api := app.Group("/api")
 	{
 		auth := api.Group("/auth")
 		{
 			auth.Post("sign_up", h.signUp)
 			auth.Post("sign_in", h.signIn)
+		}
+
+		v1 := api.Group("v1", h.userInfo)
+		{
+			channel := v1.Group("channel/")
+			{
+				channel.Post("", h.CreateChannel)
+			}
 		}
 	}
 }

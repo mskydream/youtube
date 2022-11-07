@@ -11,12 +11,18 @@ type Auth interface {
 	ParseToken(token string) (model.UserProfile, error)
 }
 
+type Channel interface {
+	CreateChannel(channel *model.Channel, userId int) (model.Channel, error)
+}
+
 type UseCase struct {
 	Auth
+	Channel
 }
 
 func NewUseCase(repo *repository.Repository) *UseCase {
 	return &UseCase{
-		Auth: NewAuthUseCase(repo.Auth),
+		Auth:    NewAuthUseCase(repo.Auth),
+		Channel: NewChannelUseCase(repo.Channel),
 	}
 }

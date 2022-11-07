@@ -11,12 +11,18 @@ type Auth interface {
 	GetUser(input *model.SignIn) (model.UserProfile, error)
 }
 
+type Channel interface {
+	CreateChannel(channel *model.Channel, userId int) (model.Channel, error)
+}
+
 type Repository struct {
 	Auth
+	Channel
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Auth: postgres.NewAuthPostgres(db),
+		Auth:    postgres.NewAuthPostgres(db),
+		Channel: postgres.NewChannelPostgres(db),
 	}
 }
