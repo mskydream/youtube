@@ -21,6 +21,7 @@ func (h *Handler) InitRouterV1(app *fiber.App) {
 		auth := api.Group("/auth")
 		{
 			auth.Post("sign_up", h.signUp)
+			auth.Post("sign_in", h.signIn)
 		}
 	}
 }

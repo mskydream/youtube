@@ -3,15 +3,17 @@ module github.com/mskydream/youtube
 go 1.19
 
 require (
-	github.com/jackc/pgx/v5 v5.0.4
+	github.com/gofiber/fiber/v2 v2.39.0
+	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/jackc/pgx/v4 v4.17.2
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/spf13/viper v1.13.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/gofiber/fiber/v2 v2.39.0 // indirect
-	github.com/golang-migrate/migrate/v4 v4.15.2 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -22,8 +24,6 @@ require (
 	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.12.0 // indirect
-	github.com/jackc/pgx/v4 v4.17.2 // indirect
-	github.com/jackc/puddle/v2 v2.0.0 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/lib/pq v1.10.2 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect

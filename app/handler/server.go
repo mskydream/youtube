@@ -19,14 +19,13 @@ func Run(app *fiber.App) error {
 		return err
 	}
 
-	dbPool, err := db.InitDatabase(cfg)
+	db, err := db.InitDatabase(cfg)
 	if err != nil {
-		fmt.Println("Error in here")
 		return err
 	}
 	log.Println("Database success connected...")
 
-	repo := repository.NewRepository(dbPool)
+	repo := repository.NewRepository(db)
 	usecase := usecase.NewUseCase(repo)
 	handler := v1.NewHandler(usecase)
 

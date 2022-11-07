@@ -1,24 +1,24 @@
 package db
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/jackc/pgx/v4/stdlib"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jmoiron/sqlx"
+
 	"github.com/mskydream/youtube/config"
 )
 
-func InitDatabase(cfg config.Config) (*pgxpool.Pool, error) {
-	pool, err := pgxpool.New(context.Background(), cfg.DB.DatabaseURL)
+func InitDatabase(cfg config.Config) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("pgx", cfg.DB.DatabaseURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error, not connected to database, %w", err)
 	}
 
-	defer pool.Close()
+	db.SetMaxOpenConns(cfg.DB.MaxConnections)
 
 	m, err := migrate.New("file://db/migration", cfg.DB.DatabaseURL)
 	if err != nil {
@@ -31,5 +31,10 @@ func InitDatabase(cfg config.Config) (*pgxpool.Pool, error) {
 		}
 	}
 
-	return pool, nil
+	if err = db.Ping(); err != nil {
+		defer db.Close()
+		return nil, fmt.Errorf("error, not sent ping to database, %w", err)
+	}
+
+	return db, nil
 }
