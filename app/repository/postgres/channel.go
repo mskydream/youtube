@@ -32,3 +32,15 @@ func (r *ChannelPostgres) CreateChannel(channel *model.Channel, userId int) (res
 	}
 	return
 }
+
+func (r *ChannelPostgres) GetChannels() (channels []model.Channel, err error) {
+	return channels, r.db.Select(&channels, `SELECT id, user_id, channel_name, created_at FROM youtube_channel`)
+}
+
+func (r *ChannelPostgres) GetChannel(id string) (channel model.Channel, err error) {
+	return channel, r.db.Get(&channel, `SELECT id, user_id, channel_name, created_at FROM youtube_channel WHERE id = $1`, id)
+}
+
+func (r *ChannelPostgres) UpdateChannel(userId int, channel model.Channel) error {
+	return nil
+}

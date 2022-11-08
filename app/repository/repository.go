@@ -13,6 +13,9 @@ type Auth interface {
 
 type Channel interface {
 	CreateChannel(channel *model.Channel, userId int) (model.Channel, error)
+	GetChannels() ([]model.Channel, error)
+	GetChannel(id string) (model.Channel, error)
+	UpdateChannel(userId int, channel model.Channel) error
 }
 
 type Repository struct {
