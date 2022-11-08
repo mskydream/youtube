@@ -31,6 +31,7 @@ func (h *Handler) InitRouterV1(app *fiber.App) {
 			channel.Get("", h.getChannels)
 			channel.Get(":id", h.getChannel)
 			channel.Put(":id", middleware.JWTProtected(), h.changeChannel)
+			channel.Delete(":id", middleware.JWTProtected(), h.DeleteChannel)
 		}
 	}
 }

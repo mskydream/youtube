@@ -10,7 +10,7 @@ import (
 )
 
 type TokenMetadata struct {
-	UserId int
+	UserId string
 }
 
 func JWTProtected() func(*fiber.Ctx) error {
@@ -47,7 +47,7 @@ func ExtractTokenMetadata(c *fiber.Ctx) (*TokenMetadata, error) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		id := int(claims["id"].(float64))
+		id := claims["id"].(string)
 
 		return &TokenMetadata{
 			UserId: id,

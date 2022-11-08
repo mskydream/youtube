@@ -13,12 +13,7 @@ import (
 	"github.com/mskydream/youtube/db"
 )
 
-func Run(app *fiber.App) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return err
-	}
-
+func Run(app *fiber.App, cfg config.Config) error {
 	db, err := db.InitDatabase(cfg)
 	if err != nil {
 		return err

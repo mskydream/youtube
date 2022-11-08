@@ -15,7 +15,7 @@ func NewChannelPostgres(db *sqlx.DB) *ChannelPostgres {
 	}
 }
 
-func (r *ChannelPostgres) CreateChannel(channel *model.Channel, userId int) (res model.Channel, err error) {
+func (r *ChannelPostgres) CreateChannel(userId string, channel *model.Channel) (res model.Channel, err error) {
 	tx, err := r.db.Beginx()
 	if err != nil {
 		return
@@ -41,6 +41,11 @@ func (r *ChannelPostgres) GetChannel(id string) (channel model.Channel, err erro
 	return channel, r.db.Get(&channel, `SELECT id, user_id, channel_name, created_at FROM youtube_channel WHERE id = $1`, id)
 }
 
-func (r *ChannelPostgres) UpdateChannel(userId int, channel model.Channel) error {
+func (r *ChannelPostgres) UpdateChannel(userId string, channel model.Channel) error {
 	return nil
+}
+
+func (r *ChannelPostgres) DeleteChannel(id string) (err error) {
+	_, err = r.db.Exec(`DELETE FROM youtube_channel WHERE id = $1`, id)
+	return
 }

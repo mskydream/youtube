@@ -29,7 +29,7 @@ func (h *Handler) createChannel(ctx *fiber.Ctx) error {
 		)
 	}
 
-	res, err := h.usecase.CreateChannel(&channel, claims.UserId)
+	res, err := h.usecase.CreateChannel(claims.UserId, &channel)
 	if err != nil {
 		return ctx.Status(500).JSON(
 			model.ErrorResponse{
@@ -74,9 +74,9 @@ func (h *Handler) getChannel(ctx *fiber.Ctx) error {
 	channel, err := h.usecase.GetChannel(id)
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			return ctx.Status(200).JSON(
-				model.SuccessResponse{
-					IsSuccess: true,
+			return ctx.Status(400).JSON(
+				model.ErrorResponse{
+					IsSuccess: false,
 					Message:   "no rows in result set",
 				},
 			)
@@ -154,6 +154,65 @@ func (h *Handler) changeChannel(ctx *fiber.Ctx) error {
 		model.SuccessResponse{
 			IsSuccess: true,
 			Message:   "success",
+		},
+	)
+}
+
+func (h *Handler) DeleteChannel(ctx *fiber.Ctx) error {
+	channelId := ctx.Params("id")
+
+	claims, err := middleware.ExtractTokenMetadata(ctx)
+	if err != nil {
+		return ctx.Status(401).JSON(
+			model.ErrorResponse{
+				IsSuccess: false,
+				Message:   "unauthorized",
+			},
+		)
+	}
+
+	checkResult, err := h.usecase.GetChannel(channelId)
+	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			return ctx.Status(400).JSON(
+				model.ErrorResponse{
+					IsSuccess: false,
+					Message:   "no rows in result set",
+				},
+			)
+		}
+
+		return ctx.Status(500).JSON(
+			model.ErrorResponse{
+				IsSuccess: false,
+				Message:   "server error",
+			},
+		)
+	}
+
+	if checkResult.UserID != claims.UserId {
+		return ctx.Status(400).JSON(
+			model.ErrorResponse{
+				IsSuccess: false,
+				Message:   "not enough rights",
+			},
+		)
+	}
+
+	err = h.usecase.DeleteChannel(channelId)
+	if err != nil {
+		return ctx.Status(500).JSON(
+			model.ErrorResponse{
+				IsSuccess: false,
+				Message:   "server error",
+			},
+		)
+	}
+
+	return ctx.Status(200).JSON(
+		model.SuccessResponse{
+			IsSuccess: true,
+			Message:   "deleted channel",
 		},
 	)
 }
