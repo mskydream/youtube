@@ -17,7 +17,7 @@ func NewHandler(usecase *usecase.UseCase) *Handler {
 }
 
 func (h *Handler) InitRouterV1(app *fiber.App) {
-	api := app.Group("/api")
+	api := app.Group("/api/v1")
 	{
 		auth := api.Group("/auth")
 		{
@@ -25,16 +25,12 @@ func (h *Handler) InitRouterV1(app *fiber.App) {
 			auth.Post("sign_in", h.signIn)
 		}
 
-		v1 := api.Group("v1")
+		channel := api.Group("channel/")
 		{
-			v1.Use(middleware.JWTProtected())
-			channel := v1.Group("channel/")
-			{
-				channel.Post("", h.createChannel)
-				channel.Get("", h.getChannels)
-				channel.Get(":id", h.getChannel)
-				channel.Put(":id", h.changeChannel)
-			}
+			channel.Post("", middleware.JWTProtected(), h.createChannel)
+			channel.Get("", h.getChannels)
+			channel.Get(":id", h.getChannel)
+			channel.Put(":id", middleware.JWTProtected(), h.changeChannel)
 		}
 	}
 }
