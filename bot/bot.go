@@ -7,41 +7,14 @@ import (
 	"github.com/mskydream/youtube/config"
 )
 
-func RunTelegramBot(cfg config.Config) {
+func RunTelegramBot(cfg config.Config, ch chan *tgbotapi.BotAPI) {
 	bot, err := tgbotapi.NewBotAPI(cfg.Telegram.Token)
 	if err != nil {
 		log.Panic(err)
 	}
 
+	log.Println("Telegram bot success connected...")
 	bot.Debug = true
-	telegramBotUpdate(bot)
-}
 
-func telegramBotUpdate(bot *tgbotapi.BotAPI) {
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	updates := bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
-
-		if !update.Message.IsCommand() {
-			continue
-		}
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
-
-		switch update.Message.Command() {
-		case "start":
-			msg.Text = "Hello!"
-		default:
-			msg.Text = "What is this?"
-		}
-
-		if _, err := bot.Send(msg); err != nil {
-			log.Panic(err)
-		}
-	}
+	ch <- bot
 }

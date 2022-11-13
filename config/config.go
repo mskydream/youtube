@@ -22,7 +22,7 @@ type Token struct {
 
 type Telegram struct {
 	Token  string `mapstructure:"token"`
-	ChatId int    `mapstructure:"chatid"`
+	ChatId int64  `mapstructure:"chatid"`
 }
 
 func LoadConfig() (config Config, err error) {

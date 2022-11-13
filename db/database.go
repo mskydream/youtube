@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -36,5 +37,6 @@ func InitDatabase(cfg config.Config) (*sqlx.DB, error) {
 		return nil, fmt.Errorf("error, not sent ping to database, %w", err)
 	}
 
+	log.Println("Database success connected...")
 	return db, nil
 }

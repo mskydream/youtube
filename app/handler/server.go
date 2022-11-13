@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	v1 "github.com/mskydream/youtube/app/handler/v1"
 	"github.com/mskydream/youtube/app/repository"
 	"github.com/mskydream/youtube/app/usecase"
+	"github.com/mskydream/youtube/bot"
 	"github.com/mskydream/youtube/config"
 	"github.com/mskydream/youtube/db"
 )
@@ -18,10 +20,12 @@ func Run(app *fiber.App, cfg config.Config) error {
 	if err != nil {
 		return err
 	}
-	log.Println("Database success connected...")
+
+	ch := make(chan *tgbotapi.BotAPI)
+	go bot.RunTelegramBot(cfg, ch)
 
 	repo := repository.NewRepository(db)
-	usecase := usecase.NewUseCase(repo)
+	usecase := usecase.NewUseCase(repo, <-ch)
 	handler := v1.NewHandler(usecase)
 
 	app.Use(logger.New())

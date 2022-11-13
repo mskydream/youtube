@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/mskydream/youtube/app/repository"
 	"github.com/mskydream/youtube/model"
 )
@@ -18,14 +19,20 @@ type Channel interface {
 	DeleteChannel(id string) error
 }
 
+type TelegramBot interface {
+	SendMessageLog(groupChatId int64, log string)
+}
+
 type UseCase struct {
 	Auth
 	Channel
+	TelegramBot
 }
 
-func NewUseCase(repo *repository.Repository) *UseCase {
+func NewUseCase(repo *repository.Repository, bot *tgbotapi.BotAPI) *UseCase {
 	return &UseCase{
-		Auth:    NewAuthUseCase(repo.Auth),
-		Channel: NewChannelUseCase(repo.Channel),
+		Auth:        NewAuthUseCase(repo.Auth),
+		Channel:     NewChannelUseCase(repo.Channel),
+		TelegramBot: NewTelegramBotUseCase(bot),
 	}
 }

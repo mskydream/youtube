@@ -8,11 +8,13 @@ import (
 
 type Handler struct {
 	usecase *usecase.UseCase
+	// bot     *tgbotapi.BotAPI
 }
 
 func NewHandler(usecase *usecase.UseCase) *Handler {
 	return &Handler{
 		usecase: usecase,
+		// bot:     bot,
 	}
 }
 
