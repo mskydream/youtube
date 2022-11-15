@@ -37,7 +37,7 @@ func (u *AuthUseCase) SignIn(input *model.SignIn) (response model.GenerateTokenR
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = user.ID
+	claims["id"] = user.Id
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
 	signed, err := token.SignedString([]byte(cfg.Token.Key))

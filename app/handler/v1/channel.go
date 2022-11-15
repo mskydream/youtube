@@ -4,11 +4,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/mskydream/youtube/app/handler/v1/middleware"
+	"github.com/mskydream/youtube/config"
 	"github.com/mskydream/youtube/model"
 )
 
 func (h *Handler) createChannel(ctx *fiber.Ctx) error {
 	var channel model.Channel
+
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return err
+	}
 
 	claims, err := middleware.ExtractTokenMetadata(ctx)
 	if err != nil {
@@ -31,6 +37,16 @@ func (h *Handler) createChannel(ctx *fiber.Ctx) error {
 
 	res, err := h.usecase.CreateChannel(claims.UserId, &channel)
 	if err != nil {
+		if err.Error() == `ERROR: duplicate key value violates unique constraint "youtube_channel_channel_name_key" (SQLSTATE 23505)` {
+			return ctx.Status(400).JSON(
+				model.ErrorResponse{
+					IsSuccess: false,
+					Message:   "channel exist",
+				},
+			)
+		}
+
+		h.usecase.TelegramBot.SendMessageLog(cfg.Telegram.ChatId, "Create channel server error user id: "+claims.UserId+"\nChannel name: "+channel.ChannelName)
 		return ctx.Status(500).JSON(
 			model.ErrorResponse{
 				IsSuccess: false,
@@ -131,7 +147,7 @@ func (h *Handler) changeChannel(ctx *fiber.Ctx) error {
 		)
 	}
 
-	if checkResult.UserID != claims.UserId {
+	if checkResult.YoutubeAccountId != claims.UserId {
 		return ctx.Status(400).JSON(
 			model.ErrorResponse{
 				IsSuccess: false,
@@ -190,7 +206,7 @@ func (h *Handler) DeleteChannel(ctx *fiber.Ctx) error {
 		)
 	}
 
-	if checkResult.UserID != claims.UserId {
+	if checkResult.YoutubeAccountId != claims.UserId {
 		return ctx.Status(400).JSON(
 			model.ErrorResponse{
 				IsSuccess: false,

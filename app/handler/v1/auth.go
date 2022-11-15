@@ -67,7 +67,7 @@ func (h *Handler) signIn(ctx *fiber.Ctx) error {
 
 	token, err := h.usecase.SignIn(&input)
 	if err != nil {
-		h.usecase.TelegramBot.SendMessageLog(cfg.Telegram.ChatId, "Sign in server error")
+		h.usecase.TelegramBot.SendMessageLog(cfg.Telegram.ChatId, "Sign in server error"+"\nUser email: "+input.Email)
 		return ctx.Status(500).JSON(
 			model.ErrorResponse{
 				IsSuccess: false,

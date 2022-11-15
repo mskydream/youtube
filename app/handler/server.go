@@ -15,7 +15,12 @@ import (
 	"github.com/mskydream/youtube/db"
 )
 
-func Run(app *fiber.App, cfg config.Config) error {
+func Run(app *fiber.App) error {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return err
+	}
+
 	db, err := db.InitDatabase(cfg)
 	if err != nil {
 		return err
@@ -37,5 +42,6 @@ func Run(app *fiber.App, cfg config.Config) error {
 	if err != nil {
 		fmt.Println("Error in the port")
 	}
+
 	return err
 }

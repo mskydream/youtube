@@ -34,6 +34,11 @@ func (h *Handler) InitRouterV1(app *fiber.App) {
 			channel.Get(":id", h.getChannel)
 			channel.Put(":id", middleware.JWTProtected(), h.changeChannel)
 			channel.Delete(":id", middleware.JWTProtected(), h.DeleteChannel)
+
+			video := channel.Group("video/")
+			{
+				video.Post("",middleware.JWTProtected(), h.createVideo)
+			}
 		}
 	}
 }

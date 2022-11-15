@@ -23,10 +23,10 @@ func (r *ChannelPostgres) CreateChannel(userId string, channel *model.Channel) (
 
 	defer tx.Rollback()
 
-	query := `INSERT INTO youtube_channel (user_id, channel_name,created_at)
-				VALUES ($1, $2, NOW()) RETURNING id, user_id, channel_name, created_at`
+	query := `INSERT INTO youtube_channel (youtube_account_id, channel_name,created_at)
+				VALUES ($1, $2, NOW()) RETURNING id, youtube_account_id, channel_name, created_at`
 
-	err = r.db.QueryRow(query, userId, channel.ChannelName).Scan(&res.ID, &res.UserID, &res.ChannelName, &res.CreatedAt)
+	err = r.db.QueryRow(query, userId, channel.ChannelName).Scan(&res.Id, &res.YoutubeAccountId, &res.ChannelName, &res.CreatedAt)
 	if err != nil {
 		return
 	}
@@ -34,11 +34,11 @@ func (r *ChannelPostgres) CreateChannel(userId string, channel *model.Channel) (
 }
 
 func (r *ChannelPostgres) GetChannels() (channels []model.Channel, err error) {
-	return channels, r.db.Select(&channels, `SELECT id, user_id, channel_name, created_at FROM youtube_channel`)
+	return channels, r.db.Select(&channels, `SELECT id, youtube_account_id, channel_name, created_at FROM youtube_channel`)
 }
 
 func (r *ChannelPostgres) GetChannel(id string) (channel model.Channel, err error) {
-	return channel, r.db.Get(&channel, `SELECT id, user_id, channel_name, created_at FROM youtube_channel WHERE id = $1`, id)
+	return channel, r.db.Get(&channel, `SELECT id, youtube_account_id, channel_name, created_at FROM youtube_channel WHERE id = $1`, id)
 }
 
 func (r *ChannelPostgres) UpdateChannel(userId string, channel model.Channel) error {
