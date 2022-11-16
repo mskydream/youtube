@@ -31,8 +31,14 @@ func (h *Handler) InitRouterV1(app *fiber.App) {
 			channel.Get("", h.getChannels)
 			channel.Get(":id", h.getChannel)
 			channel.Put(":id", middleware.JWTProtected(), h.changeChannel)
-			channel.Delete(":id", middleware.JWTProtected(), h.DeleteChannel)
+			channel.Delete(":id", middleware.JWTProtected(), h.deleteChannel)
 
+			subscriber := channel.Group("subscriber/")
+			{
+				subscriber.Post("", middleware.JWTProtected(), h.createChannelSubscriber)
+				subscriber.Get("list", middleware.JWTProtected(), h.allChannelSubscribers)
+				subscriber.Delete(":channel_id", middleware.JWTProtected(), h.unsubscribeChannel)
+			}
 			video := channel.Group("video/")
 			{
 				video.Post("", middleware.JWTProtected(), h.createVideo)

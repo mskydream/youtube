@@ -19,6 +19,12 @@ type Channel interface {
 	DeleteChannel(id string) error
 }
 
+type ChannelSubscriber interface {
+	CreateChannelSubscriber(userId string, subscriber *model.ChannelSubscriber) error
+	GetChannelSubscribers(userId string) ([]model.ChannelSubscriber, error)
+	DeleteChannelSubscriber(userId string, channelId string) error
+}
+
 type TelegramBot interface {
 	SendMessageLog(groupChatId int64, log string)
 }
@@ -26,13 +32,15 @@ type TelegramBot interface {
 type UseCase struct {
 	Auth
 	Channel
+	ChannelSubscriber
 	TelegramBot
 }
 
 func NewUseCase(repo *repository.Repository, bot *tgbotapi.BotAPI) *UseCase {
 	return &UseCase{
-		Auth:        NewAuthUseCase(repo.Auth),
-		Channel:     NewChannelUseCase(repo.Channel),
-		TelegramBot: NewTelegramBotUseCase(bot),
+		TelegramBot:       NewTelegramBotUseCase(bot),
+		Auth:              NewAuthUseCase(repo.Auth),
+		Channel:           NewChannelUseCase(repo.Channel),
+		ChannelSubscriber: NewChannelSubscriberUseCase(repo.ChannelSubscriber),
 	}
 }

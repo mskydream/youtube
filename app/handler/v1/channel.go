@@ -174,7 +174,7 @@ func (h *Handler) changeChannel(ctx *fiber.Ctx) error {
 	)
 }
 
-func (h *Handler) DeleteChannel(ctx *fiber.Ctx) error {
+func (h *Handler) deleteChannel(ctx *fiber.Ctx) error {
 	channelId := ctx.Params("id")
 
 	claims, err := middleware.ExtractTokenMetadata(ctx)

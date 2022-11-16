@@ -19,14 +19,22 @@ type Channel interface {
 	DeleteChannel(id string) error
 }
 
+type ChannelSubscriber interface {
+	CreateChannelSubscriber(userId string, subscriber *model.ChannelSubscriber) error
+	GetChannelSubscribers(userId string) ([]model.ChannelSubscriber, error)
+	DeleteChannelSubscriber(userId string, channelId string) error
+}
+
 type Repository struct {
 	Auth
 	Channel
+	ChannelSubscriber
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Auth:    postgres.NewAuthPostgres(db),
-		Channel: postgres.NewChannelPostgres(db),
+		Auth:              postgres.NewAuthPostgres(db),
+		Channel:           postgres.NewChannelPostgres(db),
+		ChannelSubscriber: postgres.NewChannelSubscriberPostgres(db),
 	}
 }

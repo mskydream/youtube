@@ -8,3 +8,9 @@ type Channel struct {
 	ChannelName      string    `db:"channel_name" json:"channel_name"`
 	CreatedAt        time.Time `db:"created_at" json:"-"`
 }
+
+type ChannelSubscriber struct {
+	YoutubeAccountId string    `db:"youtube_account_id" json:"youtube_account_id"`
+	YoutubeChannelId string    `db:"youtube_channel_id" json:"youtube_channel_id"`
+	CreatedAt        time.Time `db:"created_at" json:"-"`
+}
