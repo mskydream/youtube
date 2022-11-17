@@ -25,10 +25,18 @@ type ChannelSubscriber interface {
 	DeleteChannelSubscriber(userId string, channelId string) error
 }
 
+type Video interface {
+	CreateVideo(channelId string, video *model.Video) error
+	GetVideos() ([]model.Video, error)
+	GetVideo(id string) (model.Video, error)
+	UpdateVideo(channelId string, video model.Video) error
+	DeleteVideo(id string) error
+}
 type Repository struct {
 	Auth
 	Channel
 	ChannelSubscriber
+	Video
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -36,5 +44,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Auth:              postgres.NewAuthPostgres(db),
 		Channel:           postgres.NewChannelPostgres(db),
 		ChannelSubscriber: postgres.NewChannelSubscriberPostgres(db),
+		Video:             postgres.NewVideoPostgres(db),
 	}
 }

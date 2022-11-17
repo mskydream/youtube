@@ -7,7 +7,7 @@ import (
 )
 
 func (h *Handler) createVideo(ctx *fiber.Ctx) error {
-	var channel model.Channel
+	var video model.Video
 
 	claims, err := middleware.ExtractTokenMetadata(ctx)
 	if err != nil {
@@ -19,7 +19,7 @@ func (h *Handler) createVideo(ctx *fiber.Ctx) error {
 		)
 	}
 
-	if err := ctx.BodyParser(&channel); err != nil {
+	if err := ctx.BodyParser(&video); err != nil {
 		return ctx.Status(400).JSON(
 			model.ErrorResponse{
 				IsSuccess: false,
@@ -28,7 +28,7 @@ func (h *Handler) createVideo(ctx *fiber.Ctx) error {
 		)
 	}
 
-	res, err := h.usecase.CreateChannel(claims.UserId, &channel)
+	err = h.usecase.CreateVideo(claims.UserId, &video)
 	if err != nil {
 		return ctx.Status(500).JSON(
 			model.ErrorResponse{
@@ -41,8 +41,7 @@ func (h *Handler) createVideo(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(
 		model.SuccessResponse{
 			IsSuccess: true,
-			Message:   "register success",
-			Data:      res,
+			Message:   "vidoe created",
 		},
 	)
 }

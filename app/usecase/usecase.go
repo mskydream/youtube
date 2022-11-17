@@ -6,6 +6,10 @@ import (
 	"github.com/mskydream/youtube/model"
 )
 
+type TelegramBot interface {
+	SendMessageLog(groupChatId int64, log string)
+}
+
 type Auth interface {
 	SignUp(userProfile *model.UserProfile) (model.UserProfile, error)
 	SignIn(input *model.SignIn) (model.GenerateTokenResponse, error)
@@ -25,15 +29,20 @@ type ChannelSubscriber interface {
 	DeleteChannelSubscriber(userId string, channelId string) error
 }
 
-type TelegramBot interface {
-	SendMessageLog(groupChatId int64, log string)
+type Video interface {
+	CreateVideo(channelId string, video *model.Video) error
+	GetVideos() ([]model.Video, error)
+	GetVideo(id string) (model.Video, error)
+	UpdateVideo(channelId string, video model.Video) error
+	DeleteVideo(id string) error
 }
 
 type UseCase struct {
+	TelegramBot
 	Auth
 	Channel
 	ChannelSubscriber
-	TelegramBot
+	Video
 }
 
 func NewUseCase(repo *repository.Repository, bot *tgbotapi.BotAPI) *UseCase {
@@ -42,5 +51,6 @@ func NewUseCase(repo *repository.Repository, bot *tgbotapi.BotAPI) *UseCase {
 		Auth:              NewAuthUseCase(repo.Auth),
 		Channel:           NewChannelUseCase(repo.Channel),
 		ChannelSubscriber: NewChannelSubscriberUseCase(repo.ChannelSubscriber),
+		Video:             NewVideoUseCase(repo.Video),
 	}
 }
