@@ -15,8 +15,8 @@ func NewVideoUseCase(repo repository.Video) *VideoUseCase {
 	}
 }
 
-func (u *VideoUseCase) CreateVideo(channelId string, video *model.Video) error {
-	return u.repo.CreateVideo(channelId, video)
+func (u *VideoUseCase) CreateVideo(video *model.Video) error {
+	return u.repo.CreateVideo(video)
 }
 func (u *VideoUseCase) GetVideos() ([]model.Video, error) {
 	return u.repo.GetVideos()

@@ -15,28 +15,12 @@ func NewVideoPostgres(db *sqlx.DB) *VideoPostgres {
 	}
 }
 
-// func (r *ChannelPostgres) CreateVideo(userId string, channel *model.Channel) (res model.Channel, err error) {
-// 	tx, err := r.db.Beginx()
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	defer tx.Rollback()
-
-// 	query := `INSERT INTO youtube_channel (youtube_account_id, channel_name,created_at)
-// 				VALUES ($1, $2, NOW()) RETURNING id, youtube_account_id, channel_name, created_at`
-
-//		err = r.db.QueryRow(query, userId, channel.ChannelName).Scan(&res.Id, &res.YoutubeAccountId, &res.ChannelName, &res.CreatedAt)
-//		if err != nil {
-//			return
-//		}
-//		return
-//	}
-func (r *VideoPostgres) CreateVideo(channelId string, video *model.Video) error {
-	return nil
+func (r *VideoPostgres) CreateVideo(video *model.Video) error {
+	_, err := r.db.Exec(`INSERT INTO video(youtube_channel_id, video_name, created_at) VALUES ($1, $2, NOW())`, video.ChannelId, video.VideoName)
+	return err
 }
-func (r *VideoPostgres) GetVideos() ([]model.Video, error) {
-	return []model.Video{}, nil
+func (r *VideoPostgres) GetVideos() (videos []model.Video, err error) {
+	return videos, r.db.Select(&videos, `SELECT id, youtube_channel_id, video_name, created_at FROM video`)
 }
 func (r *VideoPostgres) GetVideo(id string) (model.Video, error) {
 	return model.Video{}, nil

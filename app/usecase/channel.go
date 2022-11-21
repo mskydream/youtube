@@ -34,3 +34,8 @@ func (u *ChannelUseCase) UpdateChannel(userId string, channel model.Channel) err
 func (u *ChannelUseCase) DeleteChannel(id string) error {
 	return u.repo.DeleteChannel(id)
 }
+
+
+func (u *ChannelUseCase) GetMemberChannels(id string) ([]model.Channel, error){
+	return u.repo.GetMemberChannels(id)
+}

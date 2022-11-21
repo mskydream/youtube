@@ -4,7 +4,7 @@ import "time"
 
 type Video struct {
 	Id        string    `db:"id" json:"id"`
-	ChannelID string    `db:"channel_id" json:"channel_id"`
+	ChannelId string    `db:"youtube_channel_id" json:"channel_id"`
 	VideoName string    `db:"video_name" json:"video_name"`
 	CreatedAt time.Time `db:"created_at" json:"-"`
 }

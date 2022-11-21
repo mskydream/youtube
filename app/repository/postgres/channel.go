@@ -49,3 +49,7 @@ func (r *ChannelPostgres) DeleteChannel(id string) (err error) {
 	_, err = r.db.Exec(`DELETE FROM youtube_channel WHERE id = $1`, id)
 	return
 }
+
+func (r *ChannelPostgres) GetMemberChannels(id string) (channels []model.Channel, err error) {
+	return channels, r.db.Select(&channels, `SELECT id, youtube_account_id, channel_name, created_at FROM youtube_channel WHERE  youtube_account_id = $1`, id)
+}

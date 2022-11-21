@@ -15,6 +15,7 @@ type Channel interface {
 	CreateChannel(userId string, channel *model.Channel) (model.Channel, error)
 	GetChannels() ([]model.Channel, error)
 	GetChannel(id string) (model.Channel, error)
+	GetMemberChannels(id string) ([]model.Channel, error)
 	UpdateChannel(userId string, channel model.Channel) error
 	DeleteChannel(id string) error
 }
@@ -26,7 +27,7 @@ type ChannelSubscriber interface {
 }
 
 type Video interface {
-	CreateVideo(channelId string, video *model.Video) error
+	CreateVideo(video *model.Video) error
 	GetVideos() ([]model.Video, error)
 	GetVideo(id string) (model.Video, error)
 	UpdateVideo(channelId string, video model.Video) error
